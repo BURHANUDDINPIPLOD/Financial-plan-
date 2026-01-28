@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Financial Calculator</title>
+
+<style>
+:root{
+  --blue:#2563eb;
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --radius:14px;
+  --shadow:0 8px 28px rgba(0,0,0,0.06);
+  font-family:Inter,system-ui,Arial;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);margin:0;padding:16px;color:var(--text)}
+.wrap{max-width:1100px;margin:auto}
+h1,h2,h3{font-weight:800;margin:0 0 16px}
+
+.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:10px;background:#e7edff;font-weight:800;cursor:pointer}
+.tab.active{background:var(--blue);color:#fff}
+
+.card{background:var(--card);padding:24px;border-radius:14px;box-shadow:var(--shadow);margin-bottom:20px}
+
+.section{margin-bottom:30px;padding:20px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0}
+.section h3{margin-top:0;color:#1e40af}
+
+.addBox{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:12px;margin-bottom:18px}
+.addBox select,.addBox input{
+  padding:14px;border-radius:12px;border:1px solid #cbd5e1;font-size:14px
+}
+.unitSelect{padding:14px;border-radius:12px;border:1px solid #cbd5e1}
+
+table{width:100%;border-collapse:collapse;margin-top:20px;font-size:13px}
+th,td{border:1px solid #c7d2fe;padding:8px;text-align:center}
+th{background:#eef2ff;font-weight:800}
+
+.totalBox{margin-top:24px;padding:22px;text-align:center;border-radius:16px;font-weight:900}
+.red{background:#fee2e2;border:2px solid #dc2626;color:#7f1d1d}
+.green{background:#dcfce7;border:2px solid #16a34a;color:#065f46}
+.blue{background:#dbeafe;border:2px solid #2563eb;color:#1e3a8a}
+
+.controls{display:flex;justify-content:flex-end;margin-top:20px}
+button{padding:12px 18px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
+.btnPrimary{background:#2563eb;color:#fff}
+.remove{cursor:pointer;color:#dc2626;font-weight:800}
+
+.insuranceGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.insuranceCard{
+  border:1px solid #c7d2fe;border-radius:14px;padding:20px;background:#f8fafc
+}
+.insuranceCard h3{margin-bottom:12px;color:#1e3a8a}
+.insuranceCard input{
+  width:100%;padding:14px;border-radius:12px;border:1px solid #cbd5e1;margin-bottom:12px
+}
+
+/* ================= MOBILE UX FIX ================= */
+@media (max-width: 768px){
+
+body{
+  padding:12px;
+}
+
+h1{
+  font-size:22px;
+  text-align:center;
+}
+
+h2{
+  font-size:18px;
+}
+
+h3{
+  font-size:16px;
+}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  gap:8px;
+  padding-bottom:8px;
+}
+
+.tab{
+  flex:0 0 auto;
+  font-size:13px;
+  padding:10px 14px;
+  white-space:nowrap;
+}
+
+/* ---------- Cards ---------- */
+.card{
+  padding:16px;
+  border-radius:12px;
+}
+/* Extra space before each summary section */
+.card h3{
+  margin-top:48px;
+  margin-bottom:20px;
+}
+
+/* Space between summary tables */
+.card table{
+  margin-bottom:36px;
+}
+
+/* Add breathing room around summary card */
+.card:last-child{
+  padding-bottom:40px;
+}
+
+
+/* ---------- Forms ---------- */
+.addBox{
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+.addBox select,
+.addBox input{
+  width:100%;
+  font-size:14px;
+  padding:12px;
+}
+
+.unitSelect{
+  padding:12px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  font-size:15px;
+}
+
+.controls{
+  justify-content:center;
+}
+
+/* ---------- Tables → Card Style ---------- */
+table{
+  font-size:13px;
+}
+
+table thead{
+  display:none;
+}
+
+table tr{
+  display:block;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  margin-bottom:12px;
+  padding:10px;
+  background:#ffffff;
+}
+
+table td{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:none;
+  padding:6px 0;
+  text-align:left;
+}
+
+table td::before{
+  content:attr(data-label);
+  font-weight:600;
+  color:#475569;
+}
+
+/* ---------- Totals ---------- */
+.totalBox{
+  font-size:16px;
+  padding:16px;
+}
+
+.totalBox span{
+  display:block;
+  font-size:18px;
+  margin-top:4px;
+}
+
+/* ---------- Sections ---------- */
+.section{
+  padding:16px;
+  margin-bottom:20px;
+}
+
+.section p{
+  font-size:13px;
+  line-height:1.4;
+}
+
+/* ---------- Insurance Cards ---------- */
+.insuranceGrid{
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+.insuranceCard{
+  padding:16px;
+}
+
+.insuranceCard input{
+  padding:12px;
+}
+
+/* ---------- Summary ---------- */
+
+
+
+#tab5 table tr{
+  background:#f8fafc;
+}
+
+#tab5 table td{
+  font-size:14px;
+}
+
+#tab5 table td strong{
+  font-size:16px;
+}
+}
+
+/* ================= END MOBILE UX FIX ================= */
+
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<h1>Financial Calculator</h1>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab(0)">Income</div>
+  <div class="tab" onclick="showTab(1)">Fixed Expenses</div>
+  <div class="tab" onclick="showTab(2)">Variable Expenses</div>
+  <div class="tab" onclick="showTab(3)">Savings & Assets</div>
+  <div class="tab" onclick="showTab(4)">Insurance & Liabilities</div>
+  <div class="tab" onclick="showTab(5)">Summary</div>
+</div>
+
+<script>
+function showTab(i){
+  document.querySelectorAll('.card').forEach((c,n)=>c.style.display=n===i?'block':'none');
+  document.querySelectorAll('.tab').forEach((t,n)=>t.classList.toggle('active',n===i));
+
+  if(i === 5){
+    updateSummary();
+    setTimeout(buildInvestmentProjection, 0); // ✅ ENSURES DOM EXISTS
+  }
+}
+
+
+const data = { 
+  income: [], 
+  fixed: [], 
+  variable: [], 
+  savingsContributions: [],  // Monthly/Annual investments
+  assetValues: [],           // Current asset worth
+  liabilities: []            // Current loan balances
+};
+
+function annual(v,u){ return u==='monthly'?v*12:v }
+function sum(k){ return data[k].reduce((s,e)=>s+annual(e.amt,e.unit),0) }
+function sumValues(k){ return data[k].reduce((s,e)=>s+Number(e.amt||0),0) }
+
+function addItem(k,t,a,u){
+  if(!t||!a) return;
+  data[k].push({type:t,amt:a,unit:u});
+  render(k);
+}
+
+function addValue(k,t,a){
+  if(!t||!a) return;
+  data[k].push({type:t,amt:a});
+  renderValues(k);
+}
+
+function render(k){
+  document.getElementById(k+'Table').innerHTML=data[k].map((e,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${e.type}</td>
+      <td>${e.amt.toLocaleString()} (${e.unit})</td>
+      <td class="remove" onclick="data.${k}.splice(${i},1);render('${k}')">✕</td>
+    </tr>`).join('');
+  document.getElementById(k+'Total').textContent=sum(k).toLocaleString();
+}
+
+function renderValues(k){
+  document.getElementById(k+'Table').innerHTML=data[k].map((e,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${e.type}</td>
+      <td>${Number(e.amt).toLocaleString()}</td>
+      <td class="remove" onclick="data.${k}.splice(${i},1);renderValues('${k}')">✕</td>
+    </tr>`).join('');
+  document.getElementById(k+'Total').textContent=sumValues(k).toLocaleString();
+}
+</script>
+
+<!-- TAB 1: INCOME -->
+<div class="card">
+<h2>Income</h2>
+<div class="addBox">
+<select id="incomeType">
+    <option>Income from Salary</option>
+    <option>Income from Business / Profession / Self Employment</option>
+    <option>Rent</option>
+    <option>Dividends / Interest ( Both Taxable & Non Taxable )</option>
+    <option>Income from Capital Gain</option>
+    <option>Pension or Alimony Income</option>
+    <option>Any Other Income</option>
+</select>
+<input id="incomeAmt" type="number" placeholder="Amount">
+<select id="incomeUnit" class="unitSelect"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+<button class="btnPrimary" onclick="addItem('income',incomeType.value,+incomeAmt.value,incomeUnit.value);incomeAmt.value=''">Add</button>
+</div>
+<table><tbody id="incomeTable"></tbody></table>
+<div class="totalBox green">Total Income (Annual): ₹ <span id="incomeTotal">0</span></div>
+<div class="controls"><button class="btnPrimary" onclick="showTab(1)">Next</button></div>
+</div>
+
+<!-- TAB 2: FIXED EXPENSES -->
+<div class="card" style="display:none">
+<h2>Fixed Expenses</h2>
+<div class="addBox">
+<select id="fixedType">
+    <option>Property Tax</option>
+    <option>Property Maintainance Charges</option>
+    <option>Car Loan EMI</option>
+    <option>Home Loan EMI</option>
+    <option>Personal or Credit Card Loan EMI</option>
+    <option>Gold Loan EMI</option>
+    <option>Any other EMI</option>
+    <option>Property / Liability or any other Insurance Premium</option>
+    <option>Parent Support</option>
+    <option>Income Tax</option>
+    <option>Any Other</option>
+</select>
+<input id="fixedAmt" type="number" placeholder="Amount">
+<select id="fixedUnit" class="unitSelect"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+<button class="btnPrimary" onclick="addItem('fixed',fixedType.value,+fixedAmt.value,fixedUnit.value);fixedAmt.value=''">Add</button>
+</div>
+<table><tbody id="fixedTable"></tbody></table>
+<div class="totalBox red">Total Fixed (Annual): ₹ <span id="fixedTotal">0</span></div>
+<div class="controls"><button class="btnPrimary" onclick="showTab(2)">Next</button></div>
+</div>
+
+<!-- TAB 3: VARIABLE EXPENSES -->
+<div class="card" style="display:none">
+<h2>Variable Expenses</h2>
+<div class="addBox">
+<select id="variableType">
+    <option>Electricity</option>
+    <option>Cooking Gas</option>
+    <option>Telephone / Mobile / Internet</option>
+    <option>School / College Fees</option>
+    <option>Special Tuition / Coaching Fee</option>
+    <option>Books and Stationary</option>
+    <option>Domestic Help / Maid</option>
+    <option>Transportation / Fuel</option>
+    <option>Health care / Medicine</option>
+    <option>Entertainment / recreation (Movies, Hoteling, Cable etc)</option>
+    <option>Car or Vehicle maintainance / Repair</option>
+    <option>Clothing</option>
+    <option>Home Repair / Appliance Maintainance</option>
+    <option>Vacation</option>
+    <option>Others / Miscellaneous</option>
+</select>
+<input id="variableAmt" type="number" placeholder="Amount">
+<select id="variableUnit" class="unitSelect"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+<button class="btnPrimary" onclick="addItem('variable',variableType.value,+variableAmt.value,variableUnit.value);variableAmt.value=''">Add</button>
+</div>
+<table><tbody id="variableTable"></tbody></table>
+<div class="totalBox red">Total Variable (Annual): ₹ <span id="variableTotal">0</span></div>
+<div class="controls"><button class="btnPrimary" onclick="showTab(3)">Next</button></div>
+</div>
+
+<!-- TAB 4: SAVINGS & ASSETS (RESTRUCTURED) -->
+<div class="card" style="display:none">
+<h2>Savings & Assets</h2>
+
+<!-- SECTION A: Savings Contributions -->
+<div class="section">
+<h3>A. Monthly/Annual Savings Contributions</h3>
+<p style="margin:0 0 16px;color:#64748b;font-size:14px">Enter how much you invest/save each month or year (for Savings Ratio)</p>
+<div class="addBox">
+<select id="savingsContributionsType">
+    <option>Equity / Hybrid / ELSS MF SIP</option>
+    <option>Debt / Liquid MF SIP</option>
+    <option>PPF Contribution</option>
+    <option>EPF Contribution</option>
+    <option>Sukanya Samruddhi Yojana</option>
+    <option>NPS Contribution</option>
+    <option>RD (Recurring Deposit)</option>
+    <option>Others</option>
+</select>
+<input id="savingsContributionsAmt" type="number" placeholder="Amount">
+<select id="savingsContributionsUnit" class="unitSelect"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+<button class="btnPrimary" onclick="addItem('savingsContributions',savingsContributionsType.value,+savingsContributionsAmt.value,savingsContributionsUnit.value);savingsContributionsAmt.value=''">Add</button>
+</div>
+<table><tbody id="savingsContributionsTable"></tbody></table>
+<div class="totalBox green">Total Savings Contributions (Annual): ₹ <span id="savingsContributionsTotal">0</span></div>
+</div>
+
+<!-- SECTION B: Current Asset Values -->
+<div class="section">
+<h3>B. Current Asset Values</h3>
+<p style="margin:0 0 16px;color:#64748b;font-size:14px">Enter the current worth/balance of your assets (for Net Worth & Solvency Ratio)</p>
+<div class="addBox">
+<select id="assetValuesType">
+    <option>Savings A/C Balance</option>
+    <option>Fixed Deposit (FD)</option>
+    <option>Equity / Hybrid / ELSS MF (Current Value)</option>
+    <option>Debt / Liquid MF (Current Value)</option>
+    <option>Stocks & Shares</option>
+    <option>Real Estate (Residential)</option>
+    <option>Real Estate (Commercial)</option>
+    <option>Gold / Silver</option>
+    <option>PPF Balance</option>
+    <option>EPF Balance</option>
+    <option>NPS Balance</option>
+    <option>Sukanya Samruddhi Yojana Balance</option>
+    <option>Others</option>
+</select>
+<input id="assetValuesAmt" type="number" placeholder="Current Value">
+<select class="unitSelect" style="visibility:hidden"><option>Value</option></select>
+<button class="btnPrimary" onclick="addValue('assetValues',assetValuesType.value,+assetValuesAmt.value);assetValuesAmt.value=''">Add</button>
+</div>
+<table><tbody id="assetValuesTable"></tbody></table>
+<div class="totalBox blue">Total Asset Values: ₹ <span id="assetValuesTotal">0</span></div>
+</div>
+
+<div class="controls"><button class="btnPrimary" onclick="showTab(4)">Next</button></div>
+</div>
+
+<!-- TAB 5: INSURANCE & LIABILITIES (RESTRUCTURED) -->
+<div class="card" style="display:none">
+<h2>Insurance & Liabilities</h2>
+
+<!-- Insurance Section -->
+<div class="section">
+<h3>Insurance Policies</h3>
+<div class="insuranceGrid">
+<div class="insuranceCard">
+<h3>Life Insurance</h3>
+<input id="lifePremium" type="number" placeholder="Annual Premium">
+<input id="lifeCover" type="number" placeholder="Cover Amount">
+</div>
+<div class="insuranceCard">
+<h3>Health Insurance</h3>
+<input id="healthPremium" type="number" placeholder="Annual Premium">
+<input id="healthCover" type="number" placeholder="Cover Amount">
+</div>
+</div>
+</div>
+
+<!-- Liabilities Section -->
+<div class="section">
+<h3>Current Loan Balances</h3>
+<p style="margin:0 0 16px;color:#64748b;font-size:14px">Enter current outstanding balance (not EMI) for each loan</p>
+<div class="addBox">
+<select id="liabilitiesType">
+    <option>Home Loan Balance</option>
+    <option>Car Loan Balance</option>
+    <option>Personal Loan Balance</option>
+    <option>Gold Loan Balance</option>
+    <option>Credit Card Outstanding</option>
+    <option>Any Other Loan</option>
+</select>
+<input id="liabilitiesAmt" type="number" placeholder="Outstanding Balance">
+<select class="unitSelect" style="visibility:hidden"><option>Balance</option></select>
+<button class="btnPrimary" onclick="addValue('liabilities',liabilitiesType.value,+liabilitiesAmt.value);liabilitiesAmt.value=''">Add</button>
+</div>
+<table><tbody id="liabilitiesTable"></tbody></table>
+<div class="totalBox red">Total Liabilities: ₹ <span id="liabilitiesTotal">0</span></div>
+</div>
+
+<div class="controls"><button class="btnPrimary" onclick="showTab(5)">Next</button></div>
+</div>
+
+<!-- TAB 6: SUMMARY -->
+<div class="card" style="display:none">
+<h2>Financial Summary</h2>
+
+<table>
+<tr><th>Total Income</th><td id="sIncome"></td></tr>
+<tr><th>Total Expenses</th><td id="sExpenses"></td></tr>
+<tr><th>Total Assets</th><td id="sAssets"></td></tr>
+<tr><th>Total Liabilities</th><td id="sLiabilities"></td></tr>
+<tr><th>Net Worth</th><td id="sNetWorth"></td></tr>
+</table>
+
+<h3>Financial Ratios</h3>
+<table>
+<tr><th>Expense Ratio</th><td id="rExpense"></td></tr>
+<tr><th>Debt Service Ratio</th><td id="rDebt"></td></tr>
+<tr><th>Savings Ratio</th><td id="rSavings"></td></tr>
+<tr><th>Insurance Ratio</th><td id="rInsurance"></td></tr>
+<tr><th>Solvency Ratio</th><td id="rSolvency"></td></tr>
+<tr><th>Life Protection Ratio</th><td id="rLife"></td></tr>
+<tr><th>Tax Ratio</th><td id="rTax"></td></tr>
+<tr><th>Net Worth to Income</th><td id="rNWIncome"></td></tr>
+<tr><th>Liquidity Ratio</th><td id="rLiquidity"></td></tr>
+<tr><th>Total Return on Investment</th><td><strong>6.18%</strong></td></tr>
+</table>
+
+
+<h3>Asset Allocation & Expected Returns</h3>
+
+<table id="assetReturnTable">
+  <thead>
+    <tr>
+      <th>Description of Assets</th>
+      <th>Returns</th>
+      <th>Current Value</th>
+      <th>%</th>
+      <th>Average Return</th>
+      <th>Regular Savings</th>
+      <th>%</th>
+      <th>Average Return</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+  <tfoot>
+    <tr style="font-weight:800;background:#eef2ff">
+      <td>Total</td>
+      <td></td>
+      <td id="artTotalAssets"></td>
+      <td>100%</td>
+      <td id="artAvgReturn"></td>
+      <td id="artTotalSavings"></td>
+      <td>100%</td>
+      <td id="artSavingsReturn"></td>
+    </tr>
+  </tfoot>
+</table>
+
+<h3>Investment Growth Projection</h3>
+
+<table id="projectionTable">
+  <thead>
+    <tr>
+      <th>Period in Years</th>
+      <th>Value of investment<br>without planning</th>
+      <th>Value of Investment<br>after planning</th>
+      <th>Rate</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div style="height:260px; margin-top:24px">
+  <canvas id="projectionChart"></canvas>
+</div>
+
+
+
+
+
+</div>
+
+
+
+<script>
+/* ===================== HELPERS ===================== */
+function pct(v){ return isFinite(v) && v >= 0 ? (v * 100).toFixed(2) + '%' : '–'; }
+function ratio(v){ return isFinite(v) && v >= 0 ? v.toFixed(2) : '–'; }
+
+/* ===================== SUMMARY (CORRECTED LOGIC) ===================== */
+function updateSummary(){
+
+  /* ---------- INCOME ---------- */
+  const income = sum('income');
+
+  /* ---------- EXPENSES ---------- */
+  const fixedAnnual = sum('fixed');
+  const variableAnnual = sum('variable');
+  
+  /* ---------- INSURANCE ---------- */
+  const lifePremium = Number(document.getElementById('lifePremium').value) || 0;
+  const healthPremium = Number(document.getElementById('healthPremium').value) || 0;
+  const insurancePrem = lifePremium + healthPremium;
+  const lifeCoverAmt = Number(document.getElementById('lifeCover').value) || 0;
+
+  /* Include insurance in expenses */
+  const expenses = fixedAnnual + variableAnnual + insurancePrem;
+
+  /* ---------- SAVINGS ---------- */
+  const savingsContributions = sum('savingsContributions');
+
+  /* ---------- ASSETS & LIABILITIES ---------- */
+  const totalAssets = sumValues('assetValues');
+  const totalLiabilities = sumValues('liabilities');
+  const netWorth = totalAssets - totalLiabilities;
+
+  /* ---------- EMI & TAX ---------- */
+  const emiAnnual = data.fixed
+    .filter(e => e.type.includes('EMI'))
+    .reduce((s,e)=> s + annual(e.amt,e.unit), 0);
+
+  const taxAnnual = data.fixed
+    .filter(e => e.type.includes('Income Tax'))
+    .reduce((s,e)=> s + annual(e.amt,e.unit), 0);
+
+  /* ---------- LIQUIDITY ---------- */
+  const cashFD = data.assetValues
+    .filter(e => 
+      e.type.includes('Savings A/C') || 
+      e.type.includes('Fixed Deposit') ||
+      e.type.includes('FD')
+    )
+    .reduce((s,e)=> s + Number(e.amt||0), 0);
+
+  /* Monthly expense excludes insurance premium (already annual) */
+  const monthlyExpense = (fixedAnnual + variableAnnual - insurancePrem) / 12;
+
+  /* ===================== SUMMARY OUTPUT ===================== */
+  document.getElementById('sIncome').textContent = income.toLocaleString();
+  document.getElementById('sExpenses').textContent = expenses.toLocaleString();
+  document.getElementById('sAssets').textContent = totalAssets.toLocaleString();
+  document.getElementById('sLiabilities').textContent = totalLiabilities.toLocaleString();
+  document.getElementById('sNetWorth').textContent = netWorth.toLocaleString();
+
+  /* ===================== RATIOS (ALL CORRECTED) ===================== */
+
+  // 1. Expense Ratio = Total Expenses / Income
+  document.getElementById('rExpense').textContent = pct(expenses / income);
+
+  // 2. Debt Service Ratio = EMI / Income
+  document.getElementById('rDebt').textContent = pct(emiAnnual / income);
+
+  // 3. Savings Ratio = Savings Contributions / Income
+  document.getElementById('rSavings').textContent = pct(savingsContributions / income);
+
+  // 4. Insurance Ratio = Insurance Premium / Income
+  document.getElementById('rInsurance').textContent = pct(insurancePrem / income);
+
+  // 5. Solvency Ratio = Net Worth / Total Assets
+  document.getElementById('rSolvency').textContent = pct(netWorth / totalAssets);
+
+  // 6. Life Protection Ratio = Life Cover / Income
+  document.getElementById('rLife').textContent = ratio(lifeCoverAmt / income);
+
+  // 7. Tax Ratio = Tax / Income
+  document.getElementById('rTax').textContent = pct(taxAnnual / income);
+
+  // 8. Net Worth to Income = Net Worth / Income
+  document.getElementById('rNWIncome').textContent = ratio(netWorth / income);
+
+  // 9. Liquidity Ratio = (Cash + FD) / Monthly Expense
+  document.getElementById('rLiquidity').textContent = ratio(cashFD / monthlyExpense);
+}
+
+
+
+
+/* ================= ASSET RETURN TABLE ================= */
+
+const assetReturnConfig = [
+  { label:"Cash / Bank Balance ( Saving Account)", match:["Savings A/C"], return:2.5 },
+  { label:"Bank / Post office / Company FD/RD", match:["Fixed Deposit","FD","RD"], return:5 },
+  { label:"Equity MF", match:["Equity / Hybrid"], return:10 },
+  { label:"Debt MF", match:["Debt / Liquid MF"], return:7 },
+  { label:"Stocks / Shares", match:["Stocks"], return:9 },
+  { label:"Bonds / Debentures / Govt Securities etc", match:["Bond"], return:7 },
+  { label:"Life Insurance", match:["Life Insurance"], return:5 },
+  { label:"Gold Securities / Gold ETF / SGB", match:["Gold ETF","SGB"], return:8 },
+  { label:"Physical Gold / Ornaments", match:["Gold / Silver"], return:7 },
+  { label:"PPF", match:["PPF"], return:7.1 },
+  { label:"Sukanya Samruddhi Yojna", match:["Sukanya"], return:8 },
+  { label:"Residential Property 1", match:["Residential"], return:6 },
+  { label:"Commercial Property", match:["Commercial"], return:8 },
+  { label:"EPF", match:["EPF"], return:8.25 },
+  { label:"NPS", match:["NPS"], return:8 },
+  { label:"Any other Investment", match:["Others"], return:7 }
+];
+
+function buildAssetReturnTable(){
+
+const tbody = document.querySelector("#assetReturnTable tbody");
+tbody.innerHTML = "";
+
+const totalAssets = sumValues("assetValues");
+
+// MONTHLY savings total
+const totalMonthlySavings =
+  data.savingsContributions.reduce((s,a)=>{
+    return s + (a.unit === "monthly" ? a.amt : a.amt / 12);
+  },0)
+  + (Number(document.getElementById("lifePremium").value || 0) / 12);
+
+let weightedAssetReturn = 0;
+let weightedSavingsReturn = 0;
+
+assetReturnConfig.forEach(row => {
+
+  /* ---------- ASSET VALUE ---------- */
+  const assetValue = data.assetValues
+    .filter(a => row.match.some(m => a.type.includes(m)))
+    .reduce((s,a)=>s + Number(a.amt || 0),0);
+
+  /* ---------- MONTHLY SAVINGS ---------- */
+  let monthlySavings = data.savingsContributions
+    .filter(s => row.match.some(m => s.type.includes(m)))
+    .reduce((s,a)=>{
+      return s + (a.unit === "monthly" ? a.amt : a.amt / 12);
+    },0);
+
+  /* Life insurance monthly premium */
+  if(row.label === "Life Insurance"){
+    monthlySavings += Number(document.getElementById("lifePremium").value || 0) / 12;
+  }
+
+  /* ---------- PERCENTAGES ---------- */
+  const assetPct = totalAssets ? assetValue / totalAssets : 0;
+  const savingsPct = totalMonthlySavings ? monthlySavings / totalMonthlySavings : 0;
+
+  /* ---------- RETURNS (MONTHLY WEIGHTED) ---------- */
+  const assetReturn = assetPct * row.return;
+  const savingsReturn = savingsPct * row.return;
+
+  weightedAssetReturn += assetReturn;
+  weightedSavingsReturn += savingsReturn;
+
+  tbody.innerHTML += `
+    <tr>
+      <td>${row.label}</td>
+      <td>${row.return}%</td>
+      <td>₹ ${assetValue.toLocaleString()}</td>
+      <td>${(assetPct*100).toFixed(0)}%</td>
+      <td>${assetReturn.toFixed(2)}%</td>
+      <td>₹ ${monthlySavings.toLocaleString()}</td>
+      <td>${(savingsPct*100).toFixed(0)}%</td>
+      <td>${savingsReturn.toFixed(2)}%</td>
+    </tr>
+  `;
+});
+
+/* ---------- TOTALS ---------- */
+document.getElementById("artTotalAssets").textContent =
+  "₹ " + totalAssets.toLocaleString();
+
+document.getElementById("artTotalSavings").textContent =
+  "₹ " + totalMonthlySavings.toLocaleString();
+
+document.getElementById("artAvgReturn").textContent =
+  weightedAssetReturn.toFixed(2) + "%";
+
+document.getElementById("artSavingsReturn").textContent =
+  weightedSavingsReturn.toFixed(2) + "%";
+}
+
+
+/* Hook into summary */
+const oldUpdateSummary = updateSummary;
+updateSummary = function(){
+  oldUpdateSummary();
+  buildAssetReturnTable();
+};
+
+
+/* ================= INVESTMENT PROJECTION ================= */
+
+function buildInvestmentProjection(){
+
+const tbody = document.querySelector("#projectionTable tbody");
+if(!tbody) return;
+
+const years = [10,15,20,25,30];
+
+const monthlySavings = data.savingsContributions.reduce((s,a)=>{
+  return s + (a.unit === "monthly" ? a.amt : a.amt / 12);
+},0);
+
+const annualSavings = monthlySavings * 12;
+
+tbody.innerHTML = "";
+
+const withoutArr = [];
+const withArr = [];
+const projectionRates = {
+  10: { without: 0.055, with: 0.0618 },
+  15: { without: 0.055, with: 0.0623 },
+  20: { without: 0.055, with: 0.0626 },
+  25: { without: 0.055, with: 0.0629 },
+  30: { without: 0.055, with: 0.0631 }
+};
+
+years.forEach(y => {
+
+  const rWithout = projectionRates[y].without;
+  const rWith = projectionRates[y].with;
+
+  const withoutPlan = annualSavings *
+    ((Math.pow(1 + rWithout, y) - 1) / rWithout);
+
+  const withPlan = annualSavings *
+    ((Math.pow(1 + rWith, y) - 1) / rWith);
+
+  withoutArr.push(Math.round(withoutPlan));
+  withArr.push(Math.round(withPlan));
+
+  tbody.innerHTML += `
+    <tr>
+      <td>${y}</td>
+      <td>₹ ${Math.round(withoutPlan).toLocaleString()}</td>
+      <td>₹ ${Math.round(withPlan).toLocaleString()}</td>
+      <td>${(rWith*100).toFixed(2)}%</td>
+    </tr>
+  `;
+});
+
+buildProjectionChart(years, withoutArr, withArr);
+}
+
+/* ================= CHART ================= */
+
+let projectionChart;
+
+function buildProjectionChart(years, withoutArr, withArr){
+
+  const ctx = document.getElementById("projectionChart");
+
+  if(projectionChart){
+    projectionChart.destroy();
+  }
+
+  projectionChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: "Value of investment without planning",
+          data: withoutArr,
+          borderWidth: 2,
+          tension: 0.35
+        },
+        {
+          label: "Value of investment after planning",
+          data: withArr,
+          borderWidth: 3,
+          tension: 0.35
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,   // 👈 allows custom height
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { boxWidth: 14 }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: v => "₹ " + (v/100000).toFixed(0) + "L"
+          }
+        }
+      }
+    }
+  });
+}
+
+
+
+
+
+</script>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
